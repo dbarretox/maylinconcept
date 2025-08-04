@@ -1,7 +1,7 @@
 export interface CartItem {
     id: string
     name: string
-    price: number         // CAMBIAR de string a number
+    price: number
     quantity: number
     image?: string
     // AGREGAR campos de variantes seleccionadas:

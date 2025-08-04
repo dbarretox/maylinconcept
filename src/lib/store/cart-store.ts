@@ -10,6 +10,8 @@ interface CartItem {
   image?: string
   selectedColor: string
   selectedSize: string
+  customDesignFile?: File | string
+  customDesignPrice?: number
 }
 
 interface CartStore {
@@ -65,7 +67,10 @@ export const useCartStore = create<CartStore>()(
       
       getTotalItems: () => get().items.reduce((sum, item) => sum + item.quantity, 0),
       
-      getTotalPrice: () => get().items.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+      getTotalPrice: () => get().items.reduce((sum, item) => {
+        const itemTotal = (item.price * item.quantity) + (item.customDesignPrice || 0)
+        return sum + itemTotal
+      }, 0),
     }),
     {
       name: 'cart-storage',

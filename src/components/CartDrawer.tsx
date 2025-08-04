@@ -47,6 +47,16 @@ export function CartDrawer() {
                         <p className="mt-1 text-sm text-gray-500">
                           {item.selectedColor} / {item.selectedSize}
                         </p>
+                        {/* AGREGAR estas líneas: */}
+                        {item.customDesignFile && (
+                          <p className="mt-1 text-sm text-emerald-600">
+                            ✓ Con diseño personalizado
+                            {item.customDesignPrice && item.customDesignPrice > 0 && 
+                              ` (+$${item.customDesignPrice.toFixed(2)})`
+                            }
+                          </p>
+                        )}
+                        
                       </div>
                       <Button
                         variant="ghost"

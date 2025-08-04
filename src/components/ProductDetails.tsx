@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label'
 import { Minus, Plus } from 'lucide-react'
 import { useCartStore } from '@/lib/store/cart-store'
 import { toast } from 'sonner'
+import { FileUpload } from '@/components/FileUpload'
 
 interface ProductDetailsProps {
   product: Product
@@ -16,7 +17,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const [selectedColor, setSelectedColor] = useState('')
   const [selectedSize, setSelectedSize] = useState('')
   const [quantity, setQuantity] = useState(1)
-  
+  const [customDesignFile, setCustomDesignFile] = useState<File | null>(null)
   const { addItem, toggleCart } = useCartStore()
   const { title, productFields } = product
   const price = productFields?.price || 0
@@ -27,6 +28,8 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   const sizes = productFields?.availableSizes
     ? productFields.availableSizes.split(',').map(s => s.trim())
     : ['S', 'M', 'L', 'XL']
+  const allowsCustomDesign = productFields?.allowsCustomDesign
+  const customDesignPrice = productFields?.customDesignPrice || 0
   
   return (
     <div className="space-y-6">
@@ -89,6 +92,25 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         </div>
       </div>
       
+      {/* Upload de Diseño Personalizado */}
+      {allowsCustomDesign && (
+        <div>
+          <Label className="text-base font-medium">
+            DISEÑO PERSONALIZADO (OPCIONAL)
+          </Label>
+          <p className="text-sm text-gray-600 mb-3">
+            {customDesignPrice > 0
+              ? `Agrega tu diseño por $${customDesignPrice.toFixed(2)} adicionales`
+              : 'Puedes agregar tu propio diseño sin costo adicional'
+            }
+          </p>
+          <FileUpload
+            onFileSelect={setCustomDesignFile}
+            className="mb-4"
+          />
+        </div>
+      )}
+
       {/* Descripción */}
       {productFields?.shortDescription && (
         <div>
@@ -119,7 +141,9 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             quantity: quantity,
             image: productFields?.mainImage?.node?.sourceUrl,
             selectedColor: selectedColor,
-            selectedSize: selectedSize
+            selectedSize: selectedSize,
+            customDesignFile: customDesignFile || undefined,
+            customDesignPrice: customDesignFile ? customDesignPrice : 0
           })
           
           // Feedback al usuario
